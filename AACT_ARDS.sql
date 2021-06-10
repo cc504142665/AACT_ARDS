@@ -1,10 +1,10 @@
-DROP MATERIALIZED VIEW IF EXISTS aactsepsis CASCADE;
-CREATE MATERIALIZED VIEW aactsepsis as
+DROP MATERIALIZED VIEW IF EXISTS aactards CASCADE;
+CREATE MATERIALIZED VIEW aactards as
 with 
-	cond as (select distinct nct_id, downcase_name, name from ctgov.conditions where 
-		downcase_name like '%acute respiratory failure%' or downcase_name like '%acute lung injury%' or 
+	cond as (select distinct nct_id, downcase_name, name from ctgov.conditions  
+	where downcase_name like '%acute respiratory failure%' or downcase_name like '%acute lung injury%' or 
         downcase_name like '%ALI%' or downcase_name like '%ards%' or downcase_name like '%acute respiratory distress syndrome%' or 
-		downcase_name like '%shock lung%' or downcase_name like '%adult respiratory distress syndrome%'),
+	downcase_name like '%shock lung%' or downcase_name like '%adult respiratory distress syndrome%'),
 
 	designO as (select distinct nct_id, measure, time_frame from ctgov.design_outcomes
 			  where outcome_type = 'primary')
@@ -49,7 +49,7 @@ select distinct ON (studies.nct_id)
 
     from studies
 
-    INNER join cond on studies.nct_id = cond.nct_id
+    inner join cond on studies.nct_id = cond.nct_id
     left join ctgov.facilities on facilities.nct_id = cond.nct_id
     left join ctgov.sponsors on sponsors.nct_id = cond.nct_id
     left join ctgov.eligibilities on eligibilities.nct_id = cond.nct_id
